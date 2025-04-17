@@ -1,1 +1,1 @@
-https://discord.gg/N8wBJWAXg5
+JOIN https://discord.gg/N8wBJWAXg5
