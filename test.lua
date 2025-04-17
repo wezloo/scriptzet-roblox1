@@ -1,6 +1,6 @@
 -- ScriptZET mit Aimbot, ESP und Shoot Through Walls
 
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/wezloo/scriptzet-roblox1/refs/heads/main/scriptzet.lua"))()
 local Window = OrionLib:MakeWindow({
     Name = "ScriptZET v2",
     HidePremium = false,
