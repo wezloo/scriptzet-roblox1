@@ -1,35 +1,62 @@
--- Erstelle eine einfache GUI ohne Orion
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local AimbotToggle = Instance.new("TextButton")
-local SilentAimToggle = Instance.new("TextButton")
+-- Anti-Lag und Low Quality Skript für Roblox
 
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 200, 0, 200)
-Frame.Position = UDim2.new(0.5, -100, 0.5, -100)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+-- Niedrigste Grafikeinstellungen setzen
+game:GetService("GraphicsSettings").QualityLevel = Enum.QualityLevel.Level01  -- Niedrigste Qualität
+print("Grafik auf niedrigste Stufe gesetzt.")
 
--- Aimbot Toggle
-AimbotToggle.Parent = Frame
-AimbotToggle.Size = UDim2.new(0, 180, 0, 50)
-AimbotToggle.Position = UDim2.new(0, 10, 0, 10)
-AimbotToggle.Text = "Aimbot"
-AimbotToggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-AimbotToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-AimbotToggle.MouseButton1Click:Connect(function()
-    print("Aimbot aktiviert")
-    -- Aimbot-Code hier einfügen
+-- Schatten und Lichter reduzieren
+game:GetService("Lighting").ShadowQuality = Enum.ShadowQuality.Disable
+game:GetService("Lighting").Brightness = 1
+game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+print("Schatten und Beleuchtung reduziert.")
+
+-- Alle nicht notwendigen Effekte deaktivieren
+game:GetService("Lighting").FogStart = 100000
+game:GetService("Lighting").FogEnd = 100000
+game:GetService("Lighting").GlobalShadows = false
+print("Nicht notwendige Lichteffekte deaktiviert.")
+
+-- Partikel- und Soundeffekte deaktivieren
+for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
+    if v:IsA("ParticleEmitter") or v:IsA("Sound") then
+        v:Destroy()
+    end
+end
+print("Partikel- und Soundeffekte entfernt.")
+
+-- Unnötige Spielelemente entfernen (Kameraschwenks, Post-Processing-Effekte)
+game:GetService("Lighting").PostEffect = false
+game:GetService("Lighting").Vignette = false
+print("Post-Processing-Effekte deaktiviert.")
+
+-- Reduziere die Menge an Spielern, die angezeigt werden
+local player = game.Players.LocalPlayer
+local camera = game.Workspace.CurrentCamera
+camera.CameraType = Enum.CameraType.Scriptable
+camera.CFrame = CFrame.new(Vector3.new(0, 0, 0))  -- Setze die Kamera in die Nähe des Spielers
+
+-- Setze eine feste FPS-Obergrenze für Roblox
+local FPSCap = 60
+game:GetService("RunService").Heartbeat:Connect(function()
+    local frameRate = game:GetService("Stats").PerformanceStats.FramesPerSecond
+    if frameRate > FPSCap then
+        wait(0.1)  -- Falls die FPS zu hoch sind, warten
+    end
 end)
+print("FPS-Obergrenze auf 60 gesetzt.")
 
--- Silent Aim Toggle
-SilentAimToggle.Parent = Frame
-SilentAimToggle.Size = UDim2.new(0, 180, 0, 50)
-SilentAimToggle.Position = UDim2.new(0, 10, 0, 70)
-SilentAimToggle.Text = "Silent Aim"
-SilentAimToggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-SilentAimToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-SilentAimToggle.MouseButton1Click:Connect(function()
-    print("Silent Aim aktiviert")
-    -- Silent Aim Code hier einfügen
+-- Energiesparmodus aktivieren (Maximale Leistung, keine Bildschirmhintergrundprozesse)
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        -- Setze die Systemleistung auf maximale Leistung
+        local powercfg = 'powercfg -setactive SCHEME_MIN'
+        os.execute(powercfg)
+    end)
 end)
+print("Maximale Leistungseinstellungen aktiviert.")
+
+-- Reduziere die Spieler- und Teamgröße (optional)
+for _, v in pairs(game:GetService("Teams"):GetChildren()) do
+    v.MaximumPlayers = 0  -- Keine Spieler in Teams
+end
+print("Teamgröße auf 0 gesetzt.")
