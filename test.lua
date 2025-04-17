@@ -1,4 +1,9 @@
 -- ScriptZET mit Aimbot, ESP und Shoot Through Walls
+game.StarterGui:SetCore("SendNotification", {
+    Title = "ScriptZET Loaded!",
+    Text = "Das Script funktioniert ✅",
+    Duration = 5
+})
 
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/wezloo/scriptzet-roblox1/refs/heads/main/scriptzet.lua"))()
 local Window = OrionLib:MakeWindow({
