@@ -1,82 +1,75 @@
--- GUI für Fake-Pet-Tausch ohne CoreGui (executor-freundlich)
-
-local player = game.Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
-
--- GUI erstellen
-local ScreenGui = Instance.new("ScreenGui", PlayerGui)
-ScreenGui.Name = "PetChanger"
-
-local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 300, 0, 180)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -90)
-Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Frame.Active = true
-Frame.Draggable = true
-
--- Eingabefelder
-local Title = Instance.new("TextLabel", Frame)
-Title.Text = "Fake Pet Swapper"
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 20
-
-local InputFrom = Instance.new("TextBox", Frame)
-InputFrom.PlaceholderText = "Original-Pet (z.B. Cat)"
-InputFrom.Size = UDim2.new(1, -20, 0, 30)
-InputFrom.Position = UDim2.new(0, 10, 0, 40)
-InputFrom.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-InputFrom.TextColor3 = Color3.fromRGB(255, 255, 255)
-InputFrom.ClearTextOnFocus = false
-
-local InputTo = Instance.new("TextBox", Frame)
-InputTo.PlaceholderText = "Fake-Pet (z.B. Huge Dog)"
-InputTo.Size = UDim2.new(1, -20, 0, 30)
-InputTo.Position = UDim2.new(0, 10, 0, 80)
-InputTo.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-InputTo.TextColor3 = Color3.fromRGB(255, 255, 255)
-InputTo.ClearTextOnFocus = false
-
-local SwapButton = Instance.new("TextButton", Frame)
-SwapButton.Text = "Tauschen"
-SwapButton.Size = UDim2.new(1, -20, 0, 30)
-SwapButton.Position = UDim2.new(0, 10, 0, 120)
-SwapButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
-SwapButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SwapButton.Font = Enum.Font.SourceSansBold
-SwapButton.TextSize = 18
-
--- Lokale Fake-Pet-Liste
+-- Initiales Setup für GUI und Fake-Pets
 local fakePets = {
     {n = "Cat"},
     {n = "Dog"},
-    {n = "Dragon"},
+    {n = "Dragon"}
 }
 
--- Tauschen
-local function fakePetSwap(original, fake)
-    local found = false
-    for _, pet in pairs(fakePets) do
-        if string.lower(pet.n) == string.lower(original) then
-            pet.n = fake
-            found = true
+local function createGUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    -- GUI Frame
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 400, 0, 300)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    mainFrame.Parent = ScreenGui
+
+    -- Title
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Text = "Fake Pet Inventory"
+    titleLabel.Size = UDim2.new(1, 0, 0, 30)
+    titleLabel.TextScaled = true
+    titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Parent = mainFrame
+
+    -- Eingabefeld für Pet-Name
+    local inputBox = Instance.new("TextBox")
+    inputBox.Size = UDim2.new(1, -20, 0, 30)
+    inputBox.Position = UDim2.new(0, 10, 0, 40)
+    inputBox.Text = "Enter Pet Name"
+    inputBox.ClearTextOnFocus = true
+    inputBox.Parent = mainFrame
+
+    -- Button zum Hinzufügen
+    local addButton = Instance.new("TextButton")
+    addButton.Text = "Add Pet"
+    addButton.Size = UDim2.new(0, 100, 0, 30)
+    addButton.Position = UDim2.new(1, -110, 0, 40)
+    addButton.Parent = mainFrame
+
+    -- Liste der Fake-Pets
+    local petListFrame = Instance.new("ScrollingFrame")
+    petListFrame.Size = UDim2.new(1, -20, 0, 200)
+    petListFrame.Position = UDim2.new(0, 10, 0, 80)
+    petListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    petListFrame.ScrollBarThickness = 5
+    petListFrame.Parent = mainFrame
+
+    -- Funktion zum Hinzufügen von Fake-Pets
+    local function addFakePet(petName)
+        local petLabel = Instance.new("TextLabel")
+        petLabel.Size = UDim2.new(1, -10, 0, 30)
+        petLabel.Position = UDim2.new(0, 5, 0, #fakePets * 35)
+        petLabel.Text = petName
+        petLabel.TextScaled = true
+        petLabel.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+        petLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+        petLabel.Parent = petListFrame
+        table.insert(fakePets, {n = petName})
+        petListFrame.CanvasSize = UDim2.new(0, 0, 0, #fakePets * 35)
+    end
+
+    -- Add Button Logic
+    addButton.MouseButton1Click:Connect(function()
+        local petName = inputBox.Text
+        if petName and petName ~= "" then
+            addFakePet(petName)
         end
-    end
-    if found then
-        print("[✔] Geändert zu:", fake)
-    else
-        warn("[✘] Kein Pet namens '" .. original .. "' gefunden.")
-    end
+    end)
 end
 
-SwapButton.MouseButton1Click:Connect(function()
-    local original = InputFrom.Text
-    local fake = InputTo.Text
-    if original ~= "" and fake ~= "" then
-        fakePetSwap(original, fake)
-    else
-        warn("Beide Felder ausfüllen!")
-    end
-end)
+-- GUI erstellen
+createGUI()
