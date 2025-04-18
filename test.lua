@@ -1,10 +1,7 @@
 -- Initiales Setup für GUI und Fake-Pets
-local fakePets = {
-    {n = "Cat"},
-    {n = "Dog"},
-    {n = "Dragon"}
-}
+local fakePets = {}
 
+-- Funktion, um das GUI zu erstellen
 local function createGUI()
     -- GUI erstellen und zum PlayerGui hinzufügen
     local ScreenGui = Instance.new("ScreenGui")
@@ -12,8 +9,8 @@ local function createGUI()
 
     -- GUI Frame
     local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, 400, 0, 300)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+    mainFrame.Size = UDim2.new(0, 400, 0, 400)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -200)
     mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     mainFrame.Parent = ScreenGui
 
@@ -41,16 +38,17 @@ local function createGUI()
     addButton.Position = UDim2.new(1, -110, 0, 40)
     addButton.Parent = mainFrame
 
-    -- Liste der Fake-Pets
+    -- Liste der Fake-Pets (Anzeige)
     local petListFrame = Instance.new("ScrollingFrame")
-    petListFrame.Size = UDim2.new(1, -20, 0, 200)
+    petListFrame.Size = UDim2.new(1, -20, 0, 300)
     petListFrame.Position = UDim2.new(0, 10, 0, 80)
     petListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     petListFrame.ScrollBarThickness = 5
     petListFrame.Parent = mainFrame
 
-    -- Funktion zum Hinzufügen von Fake-Pets
+    -- Funktion zum Hinzufügen von Fake-Pets zur Liste
     local function addFakePet(petName)
+        -- Neues TextLabel für das Pet
         local petLabel = Instance.new("TextLabel")
         petLabel.Size = UDim2.new(1, -10, 0, 30)
         petLabel.Position = UDim2.new(0, 5, 0, #fakePets * 35)
@@ -59,11 +57,15 @@ local function createGUI()
         petLabel.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
         petLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
         petLabel.Parent = petListFrame
+        
+        -- Füge das Pet zur Liste hinzu
         table.insert(fakePets, {n = petName})
+
+        -- Canvas-Größe anpassen, damit die Liste scrollt
         petListFrame.CanvasSize = UDim2.new(0, 0, 0, #fakePets * 35)
     end
 
-    -- Button-Logik
+    -- Add Button-Logik
     addButton.MouseButton1Click:Connect(function()
         local petName = inputBox.Text
         if petName and petName ~= "" then
