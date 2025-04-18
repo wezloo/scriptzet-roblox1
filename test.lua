@@ -6,6 +6,7 @@ local fakePets = {
 }
 
 local function createGUI()
+    -- GUI erstellen und zum PlayerGui hinzufügen
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -62,7 +63,7 @@ local function createGUI()
         petListFrame.CanvasSize = UDim2.new(0, 0, 0, #fakePets * 35)
     end
 
-    -- Add Button Logic
+    -- Button-Logik
     addButton.MouseButton1Click:Connect(function()
         local petName = inputBox.Text
         if petName and petName ~= "" then
