@@ -1,10 +1,16 @@
+-- GUI für Fake-Pet-Tausch ohne CoreGui (executor-freundlich)
+
+local player = game.Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
 -- GUI erstellen
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+local ScreenGui = Instance.new("ScreenGui", PlayerGui)
+ScreenGui.Name = "PetChanger"
+
 local Frame = Instance.new("Frame", ScreenGui)
 Frame.Size = UDim2.new(0, 300, 0, 180)
 Frame.Position = UDim2.new(0.5, -150, 0.5, -90)
 Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Frame.BorderSizePixel = 0
 Frame.Active = true
 Frame.Draggable = true
 
@@ -42,14 +48,14 @@ SwapButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 SwapButton.Font = Enum.Font.SourceSansBold
 SwapButton.TextSize = 18
 
--- Dummy-Fake-Inventar (nur zum Test)
+-- Lokale Fake-Pet-Liste
 local fakePets = {
     {n = "Cat"},
     {n = "Dog"},
     {n = "Dragon"},
 }
 
--- Tausch-Funktion
+-- Tauschen
 local function fakePetSwap(original, fake)
     local found = false
     for _, pet in pairs(fakePets) do
@@ -59,19 +65,18 @@ local function fakePetSwap(original, fake)
         end
     end
     if found then
-        print("[✔] Pet geändert zu:", fake)
+        print("[✔] Geändert zu:", fake)
     else
-        print("[!] Kein Pet namens '" .. original .. "' gefunden.")
+        warn("[✘] Kein Pet namens '" .. original .. "' gefunden.")
     end
 end
 
--- Button gedrückt
 SwapButton.MouseButton1Click:Connect(function()
     local original = InputFrom.Text
     local fake = InputTo.Text
     if original ~= "" and fake ~= "" then
         fakePetSwap(original, fake)
     else
-        print("❗ Bitte beide Felder ausfüllen.")
+        warn("Beide Felder ausfüllen!")
     end
 end)
